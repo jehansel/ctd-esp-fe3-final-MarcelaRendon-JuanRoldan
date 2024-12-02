@@ -1,22 +1,47 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
+const Card = ({ name, username, id, isFavorite = false, handleRemove }) => {
+	const addFav = () => {
+		const favoritos = JSON.parse(localStorage.getItem("favorites")) || [];
+		const nuevoFavorito = { name, username, id };
 
-const Card = ({ name, username, id }) => {
+		if (favoritos.some((fav) => fav.id === id)) {
+			alert("este dentista ya está en favoritos");
+			return;
+		}
 
-  const addFav = ()=>{
-    // Aqui iria la logica para agregar la Card en el localStorage
-  }
+		const actualizarFavoritos = [...favoritos, nuevoFavorito];
+		localStorage.setItem("favorites", JSON.stringify(actualizarFavoritos));
+		alert(`${name} ha sido agregado a favoritos.`);
+	};
 
-  return (
-    <div className="card">
-        {/* En cada card deberan mostrar en name - username y el id */}
-
-        {/* No debes olvidar que la Card a su vez servira como Link hacia la pagina de detalle */}
-
-        {/* Ademas deberan integrar la logica para guardar cada Card en el localStorage */}
-        <button onClick={addFav} className="favButton">Add fav</button>
-    </div>
-  );
+	return (
+		<div className="card">
+			<img
+				src={`/images/doctor.jpg`}
+				alt={`Imagen de ${name}`}
+				className="card-image"
+			/>
+			<h3> {name}</h3>
+			<p> {username}</p>
+			<Link to={`/dentist/${id}`} className="detail/link">
+				Ver detalles
+			</Link>
+			{isFavorite ? (
+				<button
+					onClick={() => handleRemove(id)}
+					className="favButton delete"
+				>
+					Eliminar Favorito
+				</button>
+			) : (
+				<button onClick={addFav} className="favButton">
+					Añadir a favorito
+				</button>
+			)}
+		</div>
+	);
 };
 
 export default Card;
